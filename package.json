@@ -1,0 +1,32 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Node.js와 Express.js를 사용하여 구현한 백엔드 서버",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AYAAKIASA/backend.git"
+  },
+  "keywords": [
+    "Node.js",
+    "Express",
+    "RESTful API",
+    "MongoDB",
+    "CRUD",
+    "Web Development"
+  ],
+  "author": "MOON",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AYAAKIASA/backend/issues"
+  },
+  "homepage": "https://github.com/AYAAKIASA/backend#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongoose": "^8.3.5"
+  }
+}
