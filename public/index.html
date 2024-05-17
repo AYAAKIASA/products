@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        .product-form {
+            margin-bottom: 20px;
+        }
+        .product-form input {
+            display: block;
+            margin: 10px 0;
+        }
+        .product-list {
+            margin-top: 20px;
+        }
+        .product-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Product Management</h1>
+        <div class="product-form">
+            <h2>Add Product</h2>
+            <form id="productForm">
+                <input type="text" id="productName" placeholder="Product Name" required>
+                <input type="text" id="productDescription" placeholder="Product Description" required>
+                <input type="text" id="responsiblePerson" placeholder="Responsible Person" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <input type="text" id="manager" placeholder="Manager" required>
+                <input type="text" id="description" placeholder="Description" required>
+                <button type="submit">Add Product</button>
+            </form>
+        </div>
+        <div class="product-list">
+            <h2>Product List</h2>
+            <div id="productContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const productForm = document.getElementById('productForm');
+            const productContainer = document.getElementById('productContainer');
+
+            const fetchProducts = async () => {
+                try {
+                    const response = await fetch('/products');
+                    const products = await response.json();
+                    productContainer.innerHTML = '';
+                    products.forEach(product => {
+                        const productItem = document.createElement('div');
+                        productItem.className = 'product-item';
+                        productItem.innerHTML = `
+                            <h3>${product.productName}</h3>
+                            <p>${product.productDescription}</p>
+                            <p><strong>Responsible Person:</strong> ${product.responsiblePerson}</p>
+                            <p><strong>Manager:</strong> ${product.manager}</p>
+                            <p><strong>Description:</strong> ${product.description}</p>
+                        `;
+                        productContainer.appendChild(productItem);
+                    });
+                } catch (error) {
+                    console.error('Error fetching products:', error);
+                }
+            };
+
+            productForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const productName = document.getElementById('productName').value;
+                const productDescription = document.getElementById('productDescription').value;
+                const responsiblePerson = document.getElementById('responsiblePerson').value;
+                const password = document.getElementById('password').value;
+                const manager = document.getElementById('manager').value;
+                const description = document.getElementById('description').value;
+
+                try {
+                    const response = await fetch('/products', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            productName,
+                            productDescription,
+                            responsiblePerson,
+                            password,
+                            manager,
+                            description
+                        })
+                    });
+                    const result = await response.json();
+                    if (response.status === 201) {
+                        alert('Product added successfully');
+                        productForm.reset();
+                        fetchProducts();
+                    } else {
+                        alert('Error: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error adding product:', error);
+                }
+            });
+
+            fetchProducts();
+        });
+    </script>
+</body>
+</html>

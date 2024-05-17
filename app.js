@@ -2,13 +2,17 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const Joi = require('joi');
 const mongoose = require('mongoose');
+const path = require('path');
 const Product = require('./product');
 
 const app = express();
 
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb://localhost:27017/your_database');
+mongoose.connect('mongodb://localhost:27017/your_database', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -21,6 +25,8 @@ const productSchema = Joi.object({
   manager: Joi.string().required(),
   description: Joi.string().required()
 });
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/products', (req, res) => {
   const { productName, productDescription, responsiblePerson, password, manager, description } = req.body;
