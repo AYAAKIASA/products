@@ -157,3 +157,57 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+app.put('/products/:productId', (req, res) => {
+    const productId = req.params.productId;
+    const { productName, productDescription, responsiblePerson, password, manager, description } = req.body;
+
+    Product.findById(productId)
+        .then(product => {
+            if (!product) {
+                return res.status(404).json({ message: 'Product not found' });
+            }
+
+            if (product.password !== password) {
+                return res.status(401).json({ message: 'Password does not match' });
+            }
+
+            product.productName = productName;
+            product.productDescription = productDescription;
+            product.responsiblePerson = responsiblePerson;
+            product.manager = manager;
+            product.description = description;
+
+            return product.save();
+        })
+        .then(updatedProduct => {
+            res.status(200).json(updatedProduct);
+        })
+        .catch(err => {
+            res.status(500).json({ error: err.message });
+        });
+});
+
+app.delete('/products/:productId', (req, res) => {
+    const productId = req.params.productId;
+    const { password } = req.body;
+
+    Product.findById(productId)
+        .then(product => {
+            if (!product) {
+                return res.status(404).json({ message: 'Product not found' });
+            }
+
+            if (product.password !== password) {
+                return res.status(401).json({ message: 'Password does not match' });
+            }
+
+            return Product.deleteOne({ _id: productId });
+        })
+        .then(() => {
+            res.status(200).json({ message: 'Product deleted successfully' }); // 삭제 성공 메시지 응답
+        })
+        .catch(err => {
+            res.status(500).json({ error: err.message });
+        });
+});
