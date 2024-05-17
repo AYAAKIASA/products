@@ -30,6 +30,12 @@
             padding: 10px;
             margin-bottom: 10px;
         }
+        .success-message {
+            color: green;
+        }
+        .error-message {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -46,6 +52,7 @@
                 <input type="text" id="description" placeholder="Description" required>
                 <button type="submit">Add Product</button>
             </form>
+            <p id="addProductMessage" class="success-message"></p>
         </div>
         <div class="product-list">
             <h2>Product List</h2>
@@ -57,6 +64,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const productForm = document.getElementById('productForm');
             const productContainer = document.getElementById('productContainer');
+            const addProductMessage = document.getElementById('addProductMessage');
 
             const fetchProducts = async () => {
                 try {
@@ -105,10 +113,14 @@
                         });
                         const result = await response.json();
                         if (response.status === 200) {
-                            alert(result.message);
+                            addProductMessage.textContent = result.message;
+                            addProductMessage.classList.remove('error-message');
+                            addProductMessage.classList.add('success-message');
                             fetchProducts();
                         } else {
-                            alert('Error: ' + result.message);
+                            addProductMessage.textContent = 'Error: ' + result.message;
+                            addProductMessage.classList.remove('success-message');
+                            addProductMessage.classList.add('error-message');
                         }
                     }
                 } catch (error) {
@@ -142,11 +154,15 @@
                     });
                     const result = await response.json();
                     if (response.status === 201) {
-                        alert('Product added successfully');
+                        addProductMessage.textContent = 'Product added successfully';
+                        addProductMessage.classList.remove('error-message');
+                        addProductMessage.classList.add('success-message');
                         productForm.reset();
                         fetchProducts();
                     } else {
-                        alert('Error: ' + result.message);
+                        addProductMessage.textContent = 'Error: ' + result.message;
+                        addProductMessage.classList.remove('success-message');
+                        addProductMessage.classList.add('error-message');
                     }
                 } catch (error) {
                     console.error('Error adding product:', error);
@@ -158,4 +174,3 @@
     </script>
 </body>
 </html>
-
